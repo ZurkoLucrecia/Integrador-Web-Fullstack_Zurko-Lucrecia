@@ -1,0 +1,139 @@
+.materias-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.materia-card {
+    background: white;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+    transition: all 0.3s ease;
+    animation: fadeIn 0.5s ease;
+}
+
+.materia-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+}
+
+.materia-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 15px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid #f0f0f0;
+}
+
+.materia-header h3 {
+    color: #333;
+    font-size: 1.3rem;
+    flex: 1;
+}
+
+.estado-badge {
+    padding: 5px 12px;
+    border-radius: 20px;
+    color: white;
+    font-size: 0.85rem;
+    font-weight: 500;
+    text-transform: capitalize;
+}
+
+.materia-info {
+    margin: 15px 0;
+}
+
+.materia-info p {
+    margin: 8px 0;
+    color: #666;
+    font-size: 0.95rem;
+}
+
+.materia-info strong {
+    color: #333;
+    font-weight: 600;
+}
+
+.descripcion {
+    margin-top: 10px;
+    padding: 10px;
+    background-color: #f8f9fa;
+    border-radius: 5px;
+    font-size: 0.9rem;
+    font-style: italic;
+}
+
+.nota-final {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px;
+    background-color: #f8f9fa;
+    border-radius: 5px;
+    margin-top: 10px;
+}
+
+.nota-final span {
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+
+.nota-final .aprobado {
+    color: var(--success-color);
+}
+
+.nota-final .desaprobado {
+    color: var(--danger-color);
+}
+
+.materia-footer {
+    margin-top: 15px;
+    padding-top: 15px;
+    border-top: 1px solid #f0f0f0;
+    text-align: right;
+}
+
+.materia-footer small {
+    color: #999;
+    font-size: 0.85rem;
+}
+
+.materia-card.inscripcion {
+    border: 2px solid transparent;
+    transition: all 0.3s ease;
+}
+
+.materia-card.inscripcion:hover {
+    border-color: var(--primary-color);
+}
+
+.materia-card button {
+    width: 100%;
+    margin-top: 15px;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+@media (max-width: 768px) {
+    .materias-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .materia-header {
+        flex-direction: column;
+        gap: 10px;
+    }
+}

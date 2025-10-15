@@ -89,7 +89,7 @@ const Calificaciones = () => {
         </div>
 
         <div className="stat-card aprobadas">
-          <div className="stat-icon">✅</div>
+          <div className="stat-icon"></div>
           <div className="stat-info">
             <h3>Materias Aprobadas</h3>
             <p className="stat-value">{contarAprobadas()}</p>
@@ -97,7 +97,7 @@ const Calificaciones = () => {
         </div>
 
         <div className="stat-card desaprobadas">
-          <div className="stat-icon">❌</div>
+          <div className="stat-icon"></div>
           <div className="stat-info">
             <h3>Materias Desaprobadas</h3>
             <p className="stat-value">{contarDesaprobadas()}</p>

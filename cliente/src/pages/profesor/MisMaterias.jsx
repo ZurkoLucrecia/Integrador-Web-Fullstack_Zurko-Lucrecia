@@ -20,7 +20,7 @@ const MisMaterias = () => {
     
     const fetchMaterias = async () => {
       try {
-        // Obtener información del usuario para filtrar por ID de profesor
+        // Obtener info del usuario para filtrar por ID de profesor
         const profile = await api.getProfile();
         const profesorId = profile.usuario.id_usuario;
         
@@ -57,7 +57,7 @@ const MisMaterias = () => {
       setSelectedMateria(materia);
       setLoading(true);
       
-      // NUEVO: Llamar al endpoint para obtener estudiantes de esta materia
+      //  Llamar al endpoint para obtener estudiantes de esta materia
       const response = await api.getEstudiantesPorMateria(materia.id_materia);
       console.log('Respuesta API estudiantes:', response);
       
@@ -130,7 +130,6 @@ const MisMaterias = () => {
                 <p><strong>Carrera:</strong> {materia.nombre_carrera}</p>
                 <p><strong>Cuatrimestre:</strong> {materia.cuatrimestre}</p>
                 <p><strong>Año:</strong> {materia.anio_carrera}</p>
-                {/* AHORA MUESTRA EL CONTADOR CORRECTO */}
                 <p><strong>Estudiantes inscritos:</strong> {materia.estudiantes_inscritos || 0}</p>
                 {materia.fecha_inicio_cursada && (
                   <>

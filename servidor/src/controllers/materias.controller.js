@@ -14,7 +14,7 @@ const obtenerMaterias = async (req, res) => {
         const db = req.app.get('db');
         const materias = await Materia.obtenerTodas(db, filtros);
         
-        // Asegurar codificación UTF-8 correcta
+        // Asegurar codificación UTF-8 
         res.set('Content-Type', 'application/json; charset=utf-8');
         res.json(materias);
 
@@ -99,7 +99,7 @@ const actualizarMateria = async (req, res) => {
     }
 };
 
-// Eliminar materia (eliminación suave)
+// Eliminar materia 
 const eliminarMateria = async (req, res) => {
     try {
         const { id } = req.params;
@@ -113,7 +113,7 @@ const eliminarMateria = async (req, res) => {
             });
         }
 
-        // Asegurar codificación UTF-8 correcta
+        // Asegurar codificación UTF-8 de nuevo ajs
         res.set('Content-Type', 'application/json; charset=utf-8');
         res.json({ mensaje: 'Materia eliminada exitosamente.' });
 

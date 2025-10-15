@@ -14,21 +14,18 @@ const Calificar = () => {
   useEffect(() => {
     const fetchMaterias = async () => {
       try {
-        // Get user info to filter by professor ID
         const profile = await api.getProfile();
         const profesorId = profile.usuario.id_usuario;
         
         console.log('=== CARGAR MATERIAS PARA CALIFICAR ===');
         console.log('Profesor ID:', profesorId);
         
-        // CAMBIO: Usar getProfesorMaterias en lugar de getMaterias
         const response = await api.getProfesorMaterias(profesorId);
         const materiasData = response.materias || response;
         
         console.log('Materias cargadas:', materiasData);
         setMaterias(Array.isArray(materiasData) ? materiasData : []);
         
-        // If there's only one materia, select it by default
         if (Array.isArray(materiasData) && materiasData.length === 1) {
           setSelectedMateria(materiasData[0].id_materia);
         }
@@ -58,12 +55,10 @@ const Calificar = () => {
       console.log('=== CARGAR ESTUDIANTES PARA CALIFICAR ===');
       console.log('Materia ID:', materiaId);
       
-      // CAMBIO: Usar endpoint real en lugar de mock data
       const response = await api.getEstudiantesPorMateria(materiaId);
       
       console.log('Respuesta API:', response);
       
-      // Asegurar que obtenemos un array
       let estudiantesData = [];
       if (Array.isArray(response)) {
         estudiantesData = response;
@@ -73,7 +68,6 @@ const Calificar = () => {
       
       console.log('Estudiantes obtenidos:', estudiantesData);
       
-      // Add editable fields to each student
       const estudiantesWithEdit = estudiantesData.map(est => ({
         ...est,
         editEstado: est.estado,
@@ -108,14 +102,14 @@ const Calificar = () => {
   const handleGuardar = async (index) => {
     const estudiante = estudiantes[index];
     
-    // Validate nota
+
     if (estudiante.editNota !== null && (estudiante.editNota < 0 || estudiante.editNota > 10)) {
       toast.error('La nota debe estar entre 0 y 10');
       return;
     }
     
     try {
-      // Guardar en la BD
+
       await api.actualizarCalificacion(
         selectedMateria, 
         estudiante.id_estudiante,
@@ -127,7 +121,6 @@ const Calificar = () => {
       
       toast.success(`Cambios guardados para ${estudiante.nombre} ${estudiante.apellido}`);
       
-      // Update the original values
       const updatedEstudiantes = [...estudiantes];
       updatedEstudiantes[index].estado = updatedEstudiantes[index].editEstado;
       updatedEstudiantes[index].nota_final = updatedEstudiantes[index].editNota;

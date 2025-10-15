@@ -9,13 +9,13 @@ const Menu = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   useEffect(() => {
-    // Check authentication status and user role
+    // Acá se filtran los usuarios y se los verifica
     const authStatus = AuthUtils.isAuthenticated();
     const role = AuthUtils.getUserRole();
     
     setIsAuthenticated(authStatus);
     setUserRole(role);
-  }, [location]); // Re-run when location changes
+  }, [location]); 
 
   const handleLogout = () => {
     try {
@@ -28,7 +28,7 @@ const Menu = () => {
     }
   };
 
-  // Only show menu if user is authenticated
+  // Sólo se va a mostrar el menú si se verifica el usuario
   if (!isAuthenticated) {
     return null;
   }

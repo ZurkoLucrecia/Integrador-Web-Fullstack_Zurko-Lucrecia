@@ -9,7 +9,7 @@ const obtenerCarreras = async (req, res) => {
             'SELECT * FROM carreras WHERE activo = TRUE ORDER BY nombre'
         );
 
-        // IMPORTANTE: Envolver en objeto con propiedad 'carreras'
+
         res.json({ carreras });
 
     } catch (error) {
@@ -121,7 +121,7 @@ const actualizarPeriodoInscripcion = async (req, res) => {
         });
 
     } catch (error) {
-        console.error('❌ Error al actualizar período de inscripción:', error);
+        console.error('Error al actualizar período de inscripción:', error);
         console.error(error.stack);
         res.status(500).json({ 
             error: 'Error al actualizar el período de inscripción.',
@@ -281,7 +281,7 @@ const limpiarInscripciones = async (req, res) => {
         });
 
     } catch (error) {
-        console.error('❌ Error al limpiar inscripciones:', error);
+        console.error(' Error al limpiar inscripciones:', error);
         console.error(error.stack);
         res.status(500).json({ 
             error: 'Error al archivar inscripciones.',
@@ -325,12 +325,9 @@ const obtenerEstudiantesPorMateria = async (req, res) => {
         console.log('=== OBTENER ESTUDIANTES POR MATERIA ===');
         console.log('ID Materia recibido en params:', id_materia);
         
-        // Check if the requesting user is an administrator or the professor of this materia
-        // Use req.user (which contains full user info from DB) instead of req.usuario (which is just token data)
         const userId = req.user.id_usuario;
         const userRole = req.user.rol;
         
-        // If not administrator, verify the user is the professor of this materia
         if (userRole !== 'administrador') {
             const [materias] = await db.query(
                 'SELECT id_profesor FROM materias WHERE id_materia = ? AND activo = TRUE',
@@ -369,13 +366,13 @@ const obtenerEstudiantesPorMateria = async (req, res) => {
             ORDER BY u.nombre, u.apellido
         `, [id_materia]);
 
-        console.log(`✓ Estudiantes encontrados: ${estudiantes.length}`);
+        console.log(`Estudiantes encontrados: ${estudiantes.length}`);
         console.log('Estudiantes:', estudiantes);
 
         res.json(estudiantes);
 
     } catch (error) {
-        console.error('❌ Error al obtener estudiantes:', error);
+        console.error('Error al obtener estudiantes:', error);
         res.status(500).json({ 
             error: 'Error al obtener los estudiantes.' 
         });
@@ -430,7 +427,7 @@ const actualizarCalificacion = async (req, res) => {
         });
 
     } catch (error) {
-        console.error('❌ Error al actualizar calificación:', error);
+        console.error('Error al actualizar calificación:', error);
         res.status(500).json({ 
             error: 'Error al actualizar la calificación.',
             detalle: error.message
@@ -446,5 +443,5 @@ module.exports = {
     limpiarInscripciones,
     obtenerInscripcionesArchivadas,
     obtenerEstudiantesPorMateria,
-    actualizarCalificacion  // NUEVO
+    actualizarCalificacion  
 };

@@ -1,8 +1,8 @@
 // Inscribir estudiante en materias
 const inscribirEstudiante = async (req, res) => {
     try {
-        const { id_materia } = req.body; // ID de la materia
-        const id_estudiante = req.usuario.id_usuario; // CORREGIDO
+        const { id_materia } = req.body; 
+        const id_estudiante = req.usuario.id_usuario; 
 
         if (!id_materia) {
             return res.status(400).json({ 
@@ -95,12 +95,12 @@ const inscribirEstudiante = async (req, res) => {
 // Obtener materias disponibles para inscripción (para estudiantes)
 const obtenerMateriasDisponibles = async (req, res) => {
     try {
-        const id_estudiante = req.usuario.id_usuario; // CORREGIDO
+        const id_estudiante = req.usuario.id_usuario; 
         const db = req.app.get('db');
 
         console.log(`=== OBTENER MATERIAS DISPONIBLES ===`);
         console.log(`ID Estudiante: ${id_estudiante}`);
-        console.log(`Usuario completo:`, req.usuario); // CORREGIDO
+        console.log(`Usuario completo:`, req.usuario); 
 
         // Obtener carrera del estudiante
         const [estudiantes] = await db.query(
@@ -164,7 +164,7 @@ const obtenerMateriasDisponibles = async (req, res) => {
 // Obtener materias en las que el estudiante está inscrito
 const obtenerMateriasInscritas = async (req, res) => {
     try {
-        const id_estudiante = req.usuario.id_usuario; // CORREGIDO
+        const id_estudiante = req.usuario.id_usuario; 
         const db = req.app.get('db');
 
         const [materias] = await db.query(`
@@ -192,7 +192,7 @@ const obtenerMateriasInscritas = async (req, res) => {
     }
 };
 
-// NUEVO: Obtener calificaciones (TODAS las inscripciones, incluyendo aprobadas y desaprobadas)
+// Obtener calificaciones (TODAS las inscripciones, incluyendo aprobadas y desaprobadas)
 const obtenerCalificaciones = async (req, res) => {
     try {
         const id_estudiante = req.usuario.id_usuario; // CORREGIDO
@@ -217,11 +217,11 @@ const obtenerCalificaciones = async (req, res) => {
             ORDER BY i.fecha_inscripcion DESC
         `, [id_estudiante]);
 
-        console.log(`✅ ${calificaciones.length} calificaciones encontradas`);
+        console.log(`${calificaciones.length} calificaciones encontradas`);
         res.json(calificaciones);
 
     } catch (error) {
-        console.error('❌ Error al obtener calificaciones:', error);
+        console.error('Error al obtener calificaciones:', error);
         res.status(500).json({ 
             error: 'Error al obtener las calificaciones.' 
         });
@@ -232,7 +232,7 @@ const obtenerCalificaciones = async (req, res) => {
 const cancelarInscripcion = async (req, res) => {
     try {
         const { id_materia } = req.params;
-        const id_estudiante = req.usuario.id_usuario; // CORREGIDO
+        const id_estudiante = req.usuario.id_usuario;
         const db = req.app.get('db');
 
         // Verificar que la inscripción existe y está en estado 'cursando'
@@ -273,6 +273,6 @@ module.exports = {
     inscribirEstudiante,
     obtenerMateriasDisponibles,
     obtenerMateriasInscritas,
-    obtenerCalificaciones, // NUEVO
+    obtenerCalificaciones, 
     cancelarInscripcion
 };

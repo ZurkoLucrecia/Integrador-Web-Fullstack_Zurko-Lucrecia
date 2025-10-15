@@ -1,7 +1,7 @@
 const pool = require('../config/database');
 const bcrypt = require('bcrypt');
 
-// Get all users
+// Obtener todos los usuarios
 const getUsuarios = async (req, res) => {
     try {
         const [usuarios] = await pool.query(
@@ -11,9 +11,9 @@ const getUsuarios = async (req, res) => {
             ORDER BY u.fecha_registro DESC`
         );
 
-        // Ensure proper UTF-8 encoding
+        // Asegurar codificación UTF-8 correcta
         res.set('Content-Type', 'application/json; charset=utf-8');
-        // Return array directly instead of wrapped object
+        // Devolver array directamente en lugar de objeto envuelto
         res.json(usuarios);
 
     } catch (error) {
@@ -24,7 +24,7 @@ const getUsuarios = async (req, res) => {
     }
 };
 
-// Create a new user
+// Crear un nuevo usuario
 const createUsuario = async (req, res) => {
     try {
         const { nombre, apellido, email, password, rol, id_carrera } = req.body;
@@ -32,14 +32,14 @@ const createUsuario = async (req, res) => {
         console.log('=== CREAR USUARIO ===');
         console.log('Datos recibidos:', { nombre, apellido, email, rol, id_carrera });
 
-        // Basic validation
+        // Validación básica
         if (!nombre || !apellido || !email || !password) {
             return res.status(400).json({ 
                 error: 'Nombre, apellido, email y contraseña son requeridos' 
             });
         }
 
-        // Check if user already exists
+        // Verificar si el usuario ya existe
         const [existingUsers] = await pool.query(
             'SELECT id_usuario FROM usuarios WHERE email = ?', 
             [email]
@@ -51,10 +51,10 @@ const createUsuario = async (req, res) => {
             });
         }
 
-        // Hash password with bcrypt
+        // Hashear contraseña con bcrypt
         const hashedPassword = await bcrypt.hash(password, 10);
 
-        // Insert new user WITH carrera
+        // Insertar nuevo usuario CON carrera
         const [result] = await pool.query(
             'INSERT INTO usuarios (nombre, apellido, email, password, rol, id_carrera) VALUES (?, ?, ?, ?, ?, ?)',
             [nombre, apellido, email, hashedPassword, rol || 'estudiante', id_carrera || null]
@@ -63,15 +63,15 @@ const createUsuario = async (req, res) => {
         const newUserId = result.insertId;
         console.log('Usuario creado con ID:', newUserId);
 
-        // Get the created user (without password)
+        // Obtener el usuario creado (sin contraseña)
         const [users] = await pool.query(
             'SELECT id_usuario, nombre, apellido, email, rol, fecha_registro, id_carrera FROM usuarios WHERE id_usuario = ?',
             [newUserId]
         );
 
-        console.log('✅ Usuario creado exitosamente');
+        console.log(' Usuario creado exitosamente');
 
-        // Ensure proper UTF-8 encoding
+        // Asegurar codificación UTF-8 correcta
         res.set('Content-Type', 'application/json; charset=utf-8');
         res.status(201).json({
             mensaje: 'Usuario creado exitosamente',
@@ -79,7 +79,7 @@ const createUsuario = async (req, res) => {
         });
 
     } catch (error) {
-        console.error('❌ Error al crear usuario:', error);
+        console.error('Error al crear usuario:', error);
         res.status(500).json({ 
             error: 'Error interno del servidor',
             detalle: error.message
@@ -87,7 +87,7 @@ const createUsuario = async (req, res) => {
     }
 };
 
-// Update a user
+// Actualizar un usuario
 const updateUsuario = async (req, res) => {
     try {
         const { id } = req.params;
@@ -97,7 +97,7 @@ const updateUsuario = async (req, res) => {
         console.log('ID:', id);
         console.log('Datos recibidos:', { nombre, apellido, email, rol, activo, id_carrera, tienePassword: !!password });
 
-        // Basic validation
+        // Validación básica
         if (!nombre || !apellido || !email) {
             return res.status(400).json({ 
                 error: 'Nombre, apellido y email son requeridos' 
@@ -108,7 +108,7 @@ const updateUsuario = async (req, res) => {
             SET nombre = ?, apellido = ?, email = ?, rol = ?, activo = ?, id_carrera = ?`;
         let updateParams = [nombre, apellido, email, rol, activo !== undefined ? activo : true, id_carrera || null, id];
 
-        // If password is provided, update it as well
+        // Si se proporciona contraseña, actualizarla también
         if (password && password.trim() !== '') {
             const hashedPassword = await bcrypt.hash(password, 10);
             updateQuery = `UPDATE usuarios 
@@ -116,7 +116,7 @@ const updateUsuario = async (req, res) => {
             updateParams = [nombre, apellido, email, rol, activo !== undefined ? activo : true, id_carrera || null, hashedPassword, id];
         }
 
-        // Update user
+        // Actualizar usuario
         const [result] = await pool.query(
             updateQuery + ' WHERE id_usuario = ?',
             updateParams
@@ -128,15 +128,15 @@ const updateUsuario = async (req, res) => {
             });
         }
 
-        console.log('✅ Usuario actualizado');
+        console.log('Usuario actualizado');
 
-        // Get the updated user
+        // Obtener el usuario actualizado
         const [users] = await pool.query(
             'SELECT u.id_usuario, u.nombre, u.apellido, u.email, u.rol, u.fecha_registro, u.activo, u.id_carrera, c.nombre as nombre_carrera FROM usuarios u LEFT JOIN carreras c ON u.id_carrera = c.id_carrera WHERE u.id_usuario = ?',
             [id]
         );
 
-        // Ensure proper UTF-8 encoding
+        // Asegurar codificación UTF-8 correcta
         res.set('Content-Type', 'application/json; charset=utf-8');
         res.json({
             mensaje: 'Usuario actualizado exitosamente',
@@ -144,7 +144,7 @@ const updateUsuario = async (req, res) => {
         });
 
     } catch (error) {
-        console.error('❌ Error al actualizar usuario:', error);
+        console.error('Error al actualizar usuario:', error);
         res.status(500).json({ 
             error: 'Error interno del servidor',
             detalle: error.message
@@ -152,7 +152,7 @@ const updateUsuario = async (req, res) => {
     }
 };
 
-// Delete a user
+// Eliminar un usuario
 const deleteUsuario = async (req, res) => {
     try {
         const { id } = req.params;
@@ -160,7 +160,7 @@ const deleteUsuario = async (req, res) => {
         console.log('=== ELIMINAR USUARIO ===');
         console.log('ID:', id);
 
-        // Delete user
+        // Eliminar usuario
         const [result] = await pool.query(
             'DELETE FROM usuarios WHERE id_usuario = ?',
             [id]
@@ -172,16 +172,16 @@ const deleteUsuario = async (req, res) => {
             });
         }
 
-        console.log('✅ Usuario eliminado');
+        console.log('Usuario eliminado');
 
-        // Ensure proper UTF-8 encoding
+        // Asegurar codificación UTF-8 correcta
         res.set('Content-Type', 'application/json; charset=utf-8');
         res.json({
             mensaje: 'Usuario eliminado exitosamente'
         });
 
     } catch (error) {
-        console.error('❌ Error al eliminar usuario:', error);
+        console.error('Error al eliminar usuario:', error);
         res.status(500).json({ 
             error: 'Error interno del servidor',
             detalle: error.message

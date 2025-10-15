@@ -21,7 +21,7 @@ const ProtectedRoute = ({ children, rolesPermitidos = [] }) => {
 
   // Verificar si el usuario tiene el rol requerido (si se especifica)
   if (rolesPermitidos.length > 0 && userRole && !rolesPermitidos.includes(userRole)) {
-    // Usuario no tiene el rol requerido, mostrar notificación y redirigir a página no autorizada
+    // Usuario no tiene el rol requerido, se muestra notificación y se redirige a página no autorizada
     toast.error('No tienes permiso para acceder a esta página');
     return <Navigate to="/sin-permiso" replace />;
   }

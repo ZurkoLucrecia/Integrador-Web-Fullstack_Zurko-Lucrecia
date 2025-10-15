@@ -12,7 +12,6 @@ const Dashboard = () => {
     if (userRole === 'profesor') {
       navigate('/profesor/dashboard');
     } else if (userRole === 'administrador') {
-      // CAMBIO: Ahora redirige al dashboard de selección
       navigate('/admin/dashboard');
     }
     // Los estudiantes permanecen en este panel
@@ -23,7 +22,7 @@ const Dashboard = () => {
     navigate('/login');
   };
 
-  // Si el usuario es profesor o administrador, no mostrar este panel
+  // Si el usuario es profesor o administrador, no mostrar estp
   if (userRole === 'profesor' || userRole === 'administrador') {
     return <div className="loading">Redirigiendo...</div>;
   }

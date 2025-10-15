@@ -109,6 +109,5 @@ const getProfile = async (req, res) => {
 
 module.exports = {
     login,
-    // register, // ELIMINADO - Los usuarios son creados solo por administradores
     getProfile
 };

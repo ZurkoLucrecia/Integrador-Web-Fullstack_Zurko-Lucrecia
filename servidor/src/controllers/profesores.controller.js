@@ -1,12 +1,12 @@
 const pool = require('../config/database');
 
-// Get materias assigned to a professor
+// Obtener materias asignadas a un profesor
 const getProfesorMaterias = async (req, res) => {
     try {
         const { id } = req.params;
         const profesorId = parseInt(id);
         
-        // Check if the requesting user is the same professor or an administrator
+        // Verificar si el usuario que solicita es el mismo profesor o un administrador
         const userId = req.user.id_usuario;
         const userRole = req.user.rol;
         
@@ -16,7 +16,7 @@ const getProfesorMaterias = async (req, res) => {
             });
         }
 
-        // Get materias assigned to this professor with student count and cursada dates
+        // Obtener materias asignadas a este profesor con conteo de estudiantes y fechas de cursada
         const [materias] = await pool.query(`
             SELECT m.id_materia, m.nombre, m.descripcion, m.id_carrera, m.id_profesor, 
                    m.cuatrimestre, m.anio_carrera, m.activo, c.nombre as nombre_carrera,
@@ -28,7 +28,7 @@ const getProfesorMaterias = async (req, res) => {
             [profesorId]
         );
 
-        // Ensure proper UTF-8 encoding
+        // Asegurar codificación UTF-8 correcta
         res.set('Content-Type', 'application/json; charset=utf-8');
         res.json({
             materias: materias
@@ -41,7 +41,7 @@ const getProfesorMaterias = async (req, res) => {
     }
 };
 
-// Assign a materia to a professor
+// Asignar una materia a un profesor
 const assignProfesorMateria = async (req, res) => {
     try {
         const { id } = req.params;
@@ -49,7 +49,7 @@ const assignProfesorMateria = async (req, res) => {
         const profesorId = parseInt(id);
         const materiaId = parseInt(id_materia);
 
-        // Check if the professor exists and is actually a professor
+        // Verificar si el profesor existe y es realmente un profesor
         const [profesores] = await pool.query(
             'SELECT id_usuario FROM usuarios WHERE id_usuario = ? AND rol = "profesor" AND activo = TRUE',
             [profesorId]
@@ -61,7 +61,7 @@ const assignProfesorMateria = async (req, res) => {
             });
         }
 
-        // Check if the materia exists
+        // Verificar si la materia existe
         const [materias] = await pool.query(
             'SELECT id_materia FROM materias WHERE id_materia = ? AND activo = TRUE',
             [materiaId]
@@ -73,7 +73,7 @@ const assignProfesorMateria = async (req, res) => {
             });
         }
 
-        // Assign the materia to the professor
+        // Asignar la materia al profesor
         const [result] = await pool.query(
             'UPDATE materias SET id_profesor = ? WHERE id_materia = ?',
             [profesorId, materiaId]
@@ -85,7 +85,7 @@ const assignProfesorMateria = async (req, res) => {
             });
         }
 
-        // Ensure proper UTF-8 encoding
+        // Asegurar codificación UTF-8 correcta
         res.set('Content-Type', 'application/json; charset=utf-8');
         res.json({
             mensaje: 'Materia asignada exitosamente al profesor'
@@ -98,14 +98,14 @@ const assignProfesorMateria = async (req, res) => {
     }
 };
 
-// Remove a materia from a professor
+// Remover una materia de un profesor
 const removeProfesorMateria = async (req, res) => {
     try {
         const { id, materiaId } = req.params;
         const profesorId = parseInt(id);
         const materiaIdInt = parseInt(materiaId);
 
-        // Check if the professor exists and is actually a professor
+        // Verificar si el profesor existe y es realmente un profesor
         const [profesores] = await pool.query(
             'SELECT id_usuario FROM usuarios WHERE id_usuario = ? AND rol = "profesor" AND activo = TRUE',
             [profesorId]
@@ -117,7 +117,7 @@ const removeProfesorMateria = async (req, res) => {
             });
         }
 
-        // Check if the materia exists and is assigned to this professor
+        // Verificar si la materia existe y está asignada a este profesor
         const [materias] = await pool.query(
             'SELECT id_materia FROM materias WHERE id_materia = ? AND id_profesor = ? AND activo = TRUE',
             [materiaIdInt, profesorId]
@@ -129,7 +129,7 @@ const removeProfesorMateria = async (req, res) => {
             });
         }
 
-        // Remove the professor assignment from the materia
+        // Remover la asignación del profesor de la materia
         const [result] = await pool.query(
             'UPDATE materias SET id_profesor = NULL WHERE id_materia = ? AND id_profesor = ?',
             [materiaIdInt, profesorId]
@@ -141,7 +141,7 @@ const removeProfesorMateria = async (req, res) => {
             });
         }
 
-        // Ensure proper UTF-8 encoding
+        // Asegurar codificación UTF-8 correcta
         res.set('Content-Type', 'application/json; charset=utf-8');
         res.json({
             mensaje: 'Materia desasignada exitosamente del profesor'

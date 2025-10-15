@@ -15,7 +15,7 @@ const verificarToken = async (req, res, next) => {
     try {
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
         
-        // Get full user information from database
+        // Traer info de la database
         const [users] = await pool.query(
             'SELECT id_usuario, nombre, apellido, email, rol FROM usuarios WHERE id_usuario = ? AND activo = TRUE',
             [decoded.id_usuario || decoded.id]
@@ -41,7 +41,7 @@ const verificarToken = async (req, res, next) => {
     }
 };
 
-// Middleware para verificar rol
+//  Para verificar rol
 const verificarRol = (rolesPermitidos) => {
     return (req, res, next) => {
         if (!req.user) {
@@ -50,7 +50,7 @@ const verificarRol = (rolesPermitidos) => {
             });
         }
 
-        // If rolesPermitidos is a string, convert to array
+        // Si rolesPermitidos es un string, se convierte en un array, esto para que sea mas facil de revisar
         const allowedRoles = Array.isArray(rolesPermitidos) ? rolesPermitidos : [rolesPermitidos];
 
         if (!allowedRoles.includes(req.user.rol)) {

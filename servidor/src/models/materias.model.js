@@ -150,7 +150,7 @@ class Materia {
     }
   }
 
-  // Método para eliminar una materia (soft delete)
+  // Método para eliminar una materia 
   static async eliminar(db, id) {
     try {
       const [result] = await db.query(

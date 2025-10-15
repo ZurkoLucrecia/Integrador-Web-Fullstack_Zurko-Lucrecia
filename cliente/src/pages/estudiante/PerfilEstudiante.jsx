@@ -254,7 +254,6 @@ const PerfilEstudiante = () => {
           ) : (
             <button className="btn-secondary" onClick={() => {
               setEditMode(false);
-              // Reset errors when canceling
               setErrors({});
             }}>
               Cancelar
@@ -431,7 +430,6 @@ const PerfilEstudiante = () => {
               <h2>Cambiar Contraseña</h2>
               <button className="modal-close" onClick={() => {
                 setShowPasswordModal(false);
-                // Reset errors and form when closing modal
                 setErrors({});
                 setPasswordData({
                   currentPassword: '',
@@ -508,7 +506,6 @@ const PerfilEstudiante = () => {
                   className="btn-secondary"
                   onClick={() => {
                     setShowPasswordModal(false);
-                    // Reset errors and form when canceling
                     setErrors({});
                     setPasswordData({
                       currentPassword: '',

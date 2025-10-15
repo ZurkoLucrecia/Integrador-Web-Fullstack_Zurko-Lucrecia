@@ -177,7 +177,7 @@ class ApiService {
     return response.data;
   }
 
-  // Endpoints de administrador - Asignar carrera
+  // Endpoints de administrador para asignar carrera
   async asignarCarreraAUsuario(id_usuario, id_carrera) {
     const response = await this.client.put(`/admin/usuarios/${id_usuario}/carrera`, { id_carrera });
     return response.data;
@@ -189,7 +189,7 @@ class ApiService {
     return response.data;
   }
 
-  // NUEVO: Obtener estudiantes de una materia específica (para profesores)
+  // Obtener estudiantes de una materia específica (para profesores)
   async getEstudiantesPorMateria(id_materia) {
     const response = await this.client.get(`/admin/materias/${id_materia}/estudiantes`, {
       params: {

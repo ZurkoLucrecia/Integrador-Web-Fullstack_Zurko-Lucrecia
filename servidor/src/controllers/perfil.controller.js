@@ -145,7 +145,7 @@ const cambiarPassword = async (req, res) => {
 
         const { currentPassword, newPassword } = req.body;
 
-        // Validación básica
+        // Validación 
         if (!currentPassword || !newPassword) {
             console.log('Faltan contraseñas requeridas');
             return res.status(400).json({ 

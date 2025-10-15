@@ -157,7 +157,6 @@
   font-weight: 500;
 }
 
-/* Responsive Design */
 @media (max-width: 768px) {
   .perfil-container {
     padding: 20px 15px;

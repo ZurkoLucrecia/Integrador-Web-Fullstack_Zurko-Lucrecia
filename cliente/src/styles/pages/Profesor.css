@@ -9,7 +9,7 @@
 
 .profesor-materias-container h2,
 .calificar-container h2 {
-  color: #4b0082; /* Color púrpura para profesor */
+  color: #4b0082; /* Color lilaa para profesor */
   margin-bottom: 10px;
 }
 
@@ -102,7 +102,7 @@
 }
 
 .btn-primary {
-  background-color: #4b0082; /* Púrpura */
+  background-color: #4b0082; /* lila */
   color: white;
 }
 

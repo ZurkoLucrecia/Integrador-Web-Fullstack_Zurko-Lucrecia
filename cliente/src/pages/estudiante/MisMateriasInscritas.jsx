@@ -49,6 +49,26 @@ const MisMateriasInscritas = () => {
     }
   };
 
+  const formatDate = (dateString) => {
+    if (!dateString) return 'No especificado';
+    return new Date(dateString).toLocaleDateString('es-ES', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric'
+    });
+  };
+
+  const formatDateWithTime = (dateString) => {
+    if (!dateString) return 'No especificado';
+    return new Date(dateString).toLocaleDateString('es-ES', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+  };
+
   if (loading) {
     return (
       <div className="calificaciones-container">
@@ -90,7 +110,7 @@ const MisMateriasInscritas = () => {
                 <th>Profesor</th>
                 <th>Carrera</th>
                 <th>Estado</th>
-                <th>Horario</th>
+                <th>Período de Cursada</th>
               </tr>
             </thead>
             <tbody>
@@ -104,7 +124,15 @@ const MisMateriasInscritas = () => {
                       {materia.estado}
                     </span>
                   </td>
-                  <td>{materia.horario || 'No especificado'}</td>
+                  <td>
+                    {materia.fecha_inicio_cursada && materia.fecha_fin_cursada ? (
+                      <span>
+                        {formatDate(materia.fecha_inicio_cursada)} - {formatDate(materia.fecha_fin_cursada)}
+                      </span>
+                    ) : (
+                      <span style={{ color: '#999' }}>No especificado</span>
+                    )}
+                  </td>
                 </tr>
               ))}
             </tbody>

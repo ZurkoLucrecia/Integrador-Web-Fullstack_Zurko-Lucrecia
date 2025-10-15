@@ -4,7 +4,7 @@ const bcrypt = require('bcrypt');
 // Obtener perfil del usuario actual
 const obtenerPerfil = async (req, res) => {
     try {
-        const userId = req.usuario.id_usuario;
+        const userId = req.user.id_usuario;
         console.log('Obteniendo perfil para usuario ID:', userId);
 
         const [usuarios] = await pool.query(
@@ -40,7 +40,7 @@ const obtenerPerfil = async (req, res) => {
 // Actualizar perfil del usuario actual
 const actualizarPerfil = async (req, res) => {
     try {
-        const userId = req.usuario.id_usuario;
+        const userId = req.user.id_usuario;
         console.log('Actualizando perfil para usuario ID:', userId);
         console.log('Datos recibidos:', req.body);
 
@@ -140,7 +140,7 @@ const actualizarPerfil = async (req, res) => {
 // Cambiar contraseña del usuario actual
 const cambiarPassword = async (req, res) => {
     try {
-        const userId = req.usuario.id_usuario;
+        const userId = req.user.id_usuario;
         console.log('Cambiando contraseña para usuario ID:', userId);
 
         const { currentPassword, newPassword } = req.body;

@@ -71,84 +71,10 @@ const login = async (req, res) => {
     }
 };
 
-// Función de registro (implementación con base de datos real)
-// ELIMINADO - Los usuarios son creados solo por administradores
-// const register = async (req, res) => {
-//     try {
-//         const { nombre, apellido, email, password, rol } = req.body;
-//
-//         // Validación básica
-//         if (!nombre || !apellido || !email || !password) {
-//             return res.status(400).json({ 
-//                 error: 'Nombre, apellido, email y contraseña son requeridos' 
-//             });
-//         }
-//
-//         const db = req.app.get('db');
-//
-//         // Verificar si el usuario ya existe
-//         const [existingUsers] = await db.query(
-//             'SELECT id_usuario FROM usuarios WHERE email = ?',
-//             [email]
-//         );
-//
-//         if (existingUsers.length > 0) {
-//             return res.status(400).json({ 
-//                 error: 'El email ya está registrado' 
-//             });
-//         }
-//
-//         // Encriptar contraseña
-//         const hashedPassword = await bcrypt.hash(password, 10);
-//
-//         // Crear nuevo usuario
-//         const [result] = await db.query(
-//             'INSERT INTO usuarios (nombre, apellido, email, password, rol) VALUES (?, ?, ?, ?, ?)',
-//             [nombre, apellido, email, hashedPassword, rol || 'estudiante']
-//         );
-//
-//         if (result.affectedRows === 0) {
-//             return res.status(500).json({ 
-//                 error: 'Error al registrar usuario' 
-//             });
-//         }
-//
-//         // Obtener el usuario creado
-//         const [newUsers] = await db.query(
-//             'SELECT id_usuario, nombre, apellido, email, rol FROM usuarios WHERE id_usuario = ?',
-//             [result.insertId]
-//         );
-//
-//         if (newUsers.length === 0) {
-//             return res.status(500).json({ 
-//                 error: 'Error al obtener usuario registrado' 
-//             });
-//         }
-//
-//         const newUser = newUsers[0];
-//
-//         // Devolver datos del usuario sin contraseña
-//         const { password: _, ...userWithoutPassword } = newUser;
-//
-//         // Asegurar codificación UTF-8 correcta
-//         res.set('Content-Type', 'application/json; charset=utf-8');
-//         res.status(201).json({
-//             mensaje: 'Usuario registrado exitosamente',
-//             usuario: userWithoutPassword
-//         });
-//
-//     } catch (error) {
-//         console.error('Error en registro:', error);
-//         res.status(500).json({ 
-//             error: 'Error interno del servidor' 
-//         });
-//     }
-// };
-
 // Obtener perfil del usuario actual (implementación con base de datos real)
 const getProfile = async (req, res) => {
     try {
-        const userId = req.usuario.id;
+        const userId = req.user.id_usuario;
         const db = req.app.get('db');
 
         const [users] = await db.query(

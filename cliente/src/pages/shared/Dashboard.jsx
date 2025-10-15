@@ -8,14 +8,14 @@ const Dashboard = () => {
   const userRole = AuthUtils.getUserRole();
 
   useEffect(() => {
-    // Redirect to role-specific dashboard
+    // Redirigir al panel específico del rol
     if (userRole === 'profesor') {
       navigate('/profesor/dashboard');
     } else if (userRole === 'administrador') {
       // CAMBIO: Ahora redirige al dashboard de selección
       navigate('/admin/dashboard');
     }
-    // Students stay on this dashboard
+    // Los estudiantes permanecen en este panel
   }, [userRole, navigate]);
 
   const handleLogout = () => {
@@ -23,7 +23,7 @@ const Dashboard = () => {
     navigate('/login');
   };
 
-  // If user is a professor or admin, don't show this dashboard
+  // Si el usuario es profesor o administrador, no mostrar este panel
   if (userRole === 'profesor' || userRole === 'administrador') {
     return <div className="loading">Redirigiendo...</div>;
   }
@@ -60,7 +60,7 @@ const Dashboard = () => {
       <div className="content">
         <div className="page-header">
           <div>
-            <h1>Panel de Control - Estudiante</h1>
+            <h1>¡Bienvenido Estudiante!</h1>
             <p className="page-subtitle">Accede a las diferentes secciones</p>
           </div>
           <button className="btn-secondary" onClick={handleLogout}>

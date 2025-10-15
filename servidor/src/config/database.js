@@ -1,9 +1,9 @@
 const mysql = require('mysql2/promise');
 
-// Load environment variables
+// Cargar variables de entorno
 require('dotenv').config();
 
-// Create a connection pool with proper UTF-8 encoding
+// Crear un pool de conexiones con codificación UTF-8 adecuada
 const pool = mysql.createPool({
   host: process.env.DB_HOST || 'localhost',
   user: process.env.DB_USER || 'root',
@@ -13,17 +13,17 @@ const pool = mysql.createPool({
   connectionLimit: 10,
   queueLimit: 0,
   charset: 'utf8mb4'
-  // Removed collation to avoid the warning
+  // Se eliminó la collation para evitar la advertencia
 });
 
-// Test the connection
+// Probar la conexión
 pool.getConnection()
   .then(connection => {
-    console.log('Database connection successful');
+    console.log('Conexión a la base de datos exitosa');
     connection.release();
   })
   .catch(error => {
-    console.error('Database connection failed:', error.message);
+    console.error('Falló la conexión a la base de datos:', error.message);
   });
 
 module.exports = pool;

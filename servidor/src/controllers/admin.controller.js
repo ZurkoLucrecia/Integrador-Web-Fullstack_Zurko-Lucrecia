@@ -316,11 +316,135 @@ const obtenerInscripcionesArchivadas = async (req, res) => {
     }
 };
 
+// Obtener estudiantes inscritos en una materia
+const obtenerEstudiantesPorMateria = async (req, res) => {
+    try {
+        const { id_materia } = req.params;
+        const db = req.app.get('db');
+        
+        console.log('=== OBTENER ESTUDIANTES POR MATERIA ===');
+        console.log('ID Materia recibido en params:', id_materia);
+        
+        // Check if the requesting user is an administrator or the professor of this materia
+        // Use req.user (which contains full user info from DB) instead of req.usuario (which is just token data)
+        const userId = req.user.id_usuario;
+        const userRole = req.user.rol;
+        
+        // If not administrator, verify the user is the professor of this materia
+        if (userRole !== 'administrador') {
+            const [materias] = await db.query(
+                'SELECT id_profesor FROM materias WHERE id_materia = ? AND activo = TRUE',
+                [id_materia]
+            );
+            
+            if (materias.length === 0) {
+                console.log('Materia no encontrada para ID:', id_materia);
+                return res.status(404).json({ 
+                    error: 'Materia no encontrada.' 
+                });
+            }
+            
+            const materia = materias[0];
+            console.log('Materia encontrada:', materia);
+            console.log('ID Profesor de la materia:', materia.id_profesor);
+            console.log('ID Usuario solicitante:', userId);
+            
+            if (materia.id_profesor !== userId) {
+                console.log('Acceso denegado: El usuario no es el profesor de esta materia');
+                return res.status(403).json({ 
+                    error: 'No tienes permisos para acceder a este recurso' 
+                });
+            }
+        }
+
+        console.log('=== CONSULTANDO ESTUDIANTES ===');
+        console.log('Ejecutando consulta para ID Materia:', id_materia);
+
+        const [estudiantes] = await db.query(`
+            SELECT u.id_usuario as id_estudiante, u.nombre, u.apellido, u.email,
+                   i.estado, i.nota_final
+            FROM inscripciones i
+            JOIN usuarios u ON i.id_estudiante = u.id_usuario
+            WHERE i.id_materia = ?
+            ORDER BY u.nombre, u.apellido
+        `, [id_materia]);
+
+        console.log(`✓ Estudiantes encontrados: ${estudiantes.length}`);
+        console.log('Estudiantes:', estudiantes);
+
+        res.json(estudiantes);
+
+    } catch (error) {
+        console.error('❌ Error al obtener estudiantes:', error);
+        res.status(500).json({ 
+            error: 'Error al obtener los estudiantes.' 
+        });
+    }
+};
+
+// Actualizar calificación de un estudiante
+const actualizarCalificacion = async (req, res) => {
+    try {
+        const { id_materia, id_estudiante } = req.params;
+        const { estado, nota_final } = req.body;
+        const db = req.app.get('db');
+
+        console.log('=== ACTUALIZAR CALIFICACIÓN ===');
+        console.log('Materia ID:', id_materia);
+        console.log('Estudiante ID:', id_estudiante);
+        console.log('Datos:', { estado, nota_final });
+
+        // Verificar que el usuario sea el profesor de esta materia o sea admin
+        const userId = req.usuario.id_usuario;
+        const userRole = req.usuario.rol;
+
+        if (userRole !== 'administrador') {
+            const [materias] = await db.query(
+                'SELECT id_profesor FROM materias WHERE id_materia = ?',
+                [id_materia]
+            );
+
+            if (materias.length === 0 || materias[0].id_profesor !== userId) {
+                return res.status(403).json({ 
+                    error: 'No tienes permisos para calificar esta materia.' 
+                });
+            }
+        }
+
+        // Actualizar la inscripción
+        const [result] = await db.query(
+            'UPDATE inscripciones SET estado = ?, nota_final = ? WHERE id_estudiante = ? AND id_materia = ?',
+            [estado, nota_final, id_estudiante, id_materia]
+        );
+
+        if (result.affectedRows === 0) {
+            return res.status(404).json({ 
+                error: 'Inscripción no encontrada.' 
+            });
+        }
+
+        console.log('✓ Calificación actualizada');
+
+        res.json({ 
+            mensaje: 'Calificación actualizada exitosamente.' 
+        });
+
+    } catch (error) {
+        console.error('❌ Error al actualizar calificación:', error);
+        res.status(500).json({ 
+            error: 'Error al actualizar la calificación.',
+            detalle: error.message
+        });
+    }
+};
+
 module.exports = {
     obtenerCarreras,
     obtenerMateriasPorCarrera,
     actualizarPeriodoInscripcion,
     asignarCarreraAUsuario,
-    limpiarInscripciones,           // NUEVO
-    obtenerInscripcionesArchivadas   // NUEVO
+    limpiarInscripciones,
+    obtenerInscripcionesArchivadas,
+    obtenerEstudiantesPorMateria,
+    actualizarCalificacion  // NUEVO
 };

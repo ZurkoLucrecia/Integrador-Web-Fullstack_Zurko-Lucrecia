@@ -2,7 +2,7 @@ import axios from 'axios';
 
 const API_BASE_URL = '/api';
 
-// Create axios instance with default configuration
+// Crear instancia de axios con configuración predeterminada
 const apiClient = axios.create({
   baseURL: API_BASE_URL,
   headers: {
@@ -10,7 +10,7 @@ const apiClient = axios.create({
   },
 });
 
-// Add request interceptor to include auth token
+// Agregar interceptor de solicitud para incluir token de autenticación
 apiClient.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem('token');
@@ -24,21 +24,21 @@ apiClient.interceptors.request.use(
   }
 );
 
-// Add response interceptor for error handling
+// Agregar interceptor de respuesta para manejo de errores
 apiClient.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response) {
-      // Server responded with error status
-      console.error('API Error:', error.response.status, error.response.data);
-      return Promise.reject(new Error(error.response.data.error || `Error HTTP! status: ${error.response.status}`));
+      // Servidor respondió con estado de error
+      console.error('Error de API:', error.response.status, error.response.data);
+      return Promise.reject(new Error(error.response.data.error || `¡Error HTTP! estado: ${error.response.status}`));
     } else if (error.request) {
-      // Request was made but no response received
-      console.error('API Network Error:', error.request);
+      // Se realizó la solicitud pero no se recibió respuesta
+      console.error('Error de red de API:', error.request);
       return Promise.reject(new Error('Error de red. Por favor verifica tu conexión.'));
     } else {
-      // Something else happened
-      console.error('API Error:', error.message);
+      // Ocurrió algo más
+      console.error('Error de API:', error.message);
       return Promise.reject(new Error('Error en la solicitud: ' + error.message));
     }
   }
@@ -98,8 +98,8 @@ class ApiService {
   }
 
   // Endpoints de administrador - Usuarios
-  async getUsuarios() {
-    const response = await this.client.get('/admin/usuarios');
+  async getUsuarios(filters = {}) {
+    const response = await this.client.get('/admin/usuarios', { params: filters });
     return response.data;
   }
 
@@ -186,6 +186,22 @@ class ApiService {
   // Limpiar/archivar inscripciones de una materia
   async limpiarInscripciones(id_materia) {
     const response = await this.client.post(`/admin/materias/${id_materia}/limpiar-inscripciones`);
+    return response.data;
+  }
+
+  // NUEVO: Obtener estudiantes de una materia específica (para profesores)
+  async getEstudiantesPorMateria(id_materia) {
+    const response = await this.client.get(`/admin/materias/${id_materia}/estudiantes`, {
+      params: {
+        _t: Date.now() // Romper caché
+      }
+    });
+    return response.data;
+  }
+
+  // Actualizar calificación de un estudiante en una materia
+  async actualizarCalificacion(id_materia, id_estudiante, data) {
+    const response = await this.client.put(`/admin/materias/${id_materia}/estudiantes/${id_estudiante}/calificacion`, data);
     return response.data;
   }
 }

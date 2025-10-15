@@ -5,11 +5,23 @@ const getProfesorMaterias = async (req, res) => {
     try {
         const { id } = req.params;
         const profesorId = parseInt(id);
+        
+        // Check if the requesting user is the same professor or an administrator
+        const userId = req.user.id_usuario;
+        const userRole = req.user.rol;
+        
+        if (userRole !== 'administrador' && userId !== profesorId) {
+            return res.status(403).json({ 
+                error: 'No tienes permisos para acceder a este recurso' 
+            });
+        }
 
-        // Get materias assigned to this professor
-        const [materias] = await pool.query(
-            `SELECT m.id_materia, m.nombre, m.descripcion, m.id_carrera, m.id_profesor, 
-                    m.cuatrimestre, m.anio_carrera, m.activo, c.nombre as nombre_carrera
+        // Get materias assigned to this professor with student count and cursada dates
+        const [materias] = await pool.query(`
+            SELECT m.id_materia, m.nombre, m.descripcion, m.id_carrera, m.id_profesor, 
+                   m.cuatrimestre, m.anio_carrera, m.activo, c.nombre as nombre_carrera,
+                   m.fecha_inicio_cursada, m.fecha_fin_cursada,
+                   (SELECT COUNT(*) FROM inscripciones i WHERE i.id_materia = m.id_materia AND i.estado = 'cursando') as estudiantes_inscritos
             FROM materias m
             LEFT JOIN carreras c ON m.id_carrera = c.id_carrera
             WHERE m.id_profesor = ? AND m.activo = TRUE`,

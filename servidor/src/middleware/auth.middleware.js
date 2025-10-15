@@ -1,8 +1,9 @@
 const jwt = require('jsonwebtoken');
+const pool = require('../config/database');
 require('dotenv').config();
 
 // Middleware para verificar token
-const verificarToken = (req, res, next) => {
+const verificarToken = async (req, res, next) => {
     const token = req.headers['authorization']?.split(' ')[1];
 
     if (!token) {
@@ -13,7 +14,20 @@ const verificarToken = (req, res, next) => {
 
     try {
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
-        // Ensure both id and id_usuario are set
+        
+        // Get full user information from database
+        const [users] = await pool.query(
+            'SELECT id_usuario, nombre, apellido, email, rol FROM usuarios WHERE id_usuario = ? AND activo = TRUE',
+            [decoded.id_usuario || decoded.id]
+        );
+        
+        if (users.length === 0) {
+            return res.status(401).json({ 
+                error: 'Usuario no encontrado o inactivo.' 
+            });
+        }
+        
+        req.user = users[0];
         req.usuario = {
             ...decoded,
             id: decoded.id_usuario || decoded.id,
@@ -30,7 +44,7 @@ const verificarToken = (req, res, next) => {
 // Middleware para verificar rol
 const verificarRol = (rolesPermitidos) => {
     return (req, res, next) => {
-        if (!req.usuario) {
+        if (!req.user) {
             return res.status(401).json({ 
                 error: 'Usuario no autenticado.' 
             });
@@ -39,7 +53,7 @@ const verificarRol = (rolesPermitidos) => {
         // If rolesPermitidos is a string, convert to array
         const allowedRoles = Array.isArray(rolesPermitidos) ? rolesPermitidos : [rolesPermitidos];
 
-        if (!allowedRoles.includes(req.usuario.rol)) {
+        if (!allowedRoles.includes(req.user.rol)) {
             return res.status(403).json({ 
                 error: 'No tienes permisos para acceder a este recurso.' 
             });

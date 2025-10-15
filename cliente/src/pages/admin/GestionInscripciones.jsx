@@ -253,7 +253,7 @@ const GestionInscripciones = () => {
               
               <form onSubmit={handleSubmit} className="modal-form">
                 
-                <div className="form-section">
+                <div className="form-section inscripciones-cursada-section">
                   <h3>Período de Inscripción</h3>
                   
                   <div className="form-group checkbox-group">
@@ -290,7 +290,7 @@ const GestionInscripciones = () => {
                   </div>
                 </div>
 
-                <div className="form-section">
+                <div className="form-section inscripciones-cursada-section">
                   <h3>Período de Cursada</h3>
                   
                   <div className="form-group">

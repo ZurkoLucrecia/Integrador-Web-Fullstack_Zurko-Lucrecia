@@ -109,7 +109,7 @@ La comunicación entre el frontend y el backend se realiza a través de llamadas
 ### Usuarios
 El sistema maneja tres tipos de usuarios:
 - **Estudiantes**: Pueden inscribirse en materias, ver sus calificaciones y gestionar su perfil
-- **Profesores**: Pueden gestionar sus materias asignadas y calificar a los estudiantes
+- **Profesores**: Pueden gestionar sus materias asignadas, ver estudiantes inscritos y calificar a los estudiantes
 - **Administradores**: Tienen acceso completo al sistema para gestionar usuarios, materias y configuraciones
 
 ### Carreras
@@ -143,7 +143,7 @@ Las inscripciones representan la relación entre estudiantes y materias:
 ### Panel de Control
 Una vez autenticados, los usuarios son dirigidos a su panel de control específico:
 - **Estudiantes**: Vista de sus materias inscritas, calificaciones y opciones de inscripción
-- **Profesores**: Vista de sus materias asignadas y herramientas de calificación
+- **Profesores**: Vista de sus materias asignadas, listado de estudiantes inscritos y herramientas de calificación
 - **Administradores**: Panel de administración con acceso a todas las funcionalidades
 
 ### Gestión de Materias
@@ -152,18 +152,21 @@ Una vez autenticados, los usuarios son dirigidos a su panel de control específi
 2. Pueden inscribirse en materias dentro de los períodos habilitados
 3. Pueden cancelar inscripciones mientras el período esté activo
 4. Pueden ver sus materias inscritas actuales
+5. Pueden consultar sus calificaciones finales en tiempo real
 
 #### Para Profesores
-1. Los profesores ven sus materias asignadas
-2. Pueden acceder a listados de estudiantes inscritos
-3. Pueden calificar a los estudiantes con notas finales
-4. Pueden ver el historial de sus materias
+1. Los profesores ven sus materias asignadas con el conteo actualizado de estudiantes inscritos
+2. Pueden acceder a listados detallados de estudiantes inscritos por materia
+3. Pueden calificar a los estudiantes con notas finales (0-10) y actualizar estados de inscripción
+4. Pueden guardar las calificaciones directamente en la base de datos
+5. Pueden ver el historial de sus materias
 
 #### Para Administradores
 1. Los administradores pueden crear, editar y eliminar materias
 2. Pueden asignar profesores a materias
 3. Pueden configurar períodos de inscripción y cursada
 4. Pueden gestionar el historial de inscripciones por períodos
+5. Pueden archivar inscripciones al finalizar un período académico
 
 ### Gestión de Períodos Académicos
 El sistema permite configurar períodos académicos para:
@@ -178,6 +181,17 @@ Los administradores pueden:
 2. Editar información de usuarios existentes
 3. Asignar carreras a estudiantes
 4. Activar o desactivar cuentas de usuario
+5. Los usuarios pueden actualizar su perfil personal y cambiar su contraseña
+
+### Sistema de Calificaciones
+Los profesores pueden:
+1. Acceder a la sección de calificación de estudiantes
+2. Seleccionar una materia para calificar
+3. Ver la lista actualizada de estudiantes inscritos en esa materia
+4. Asignar notas finales (0-10) a cada estudiante
+5. Actualizar el estado de inscripción (cursando, aprobado, desaprobado)
+6. Guardar las calificaciones, que se almacenan en la base de datos
+7. Los estudiantes pueden ver sus calificaciones actualizadas en su sección de "Calificaciones" en tiempo real
 
 ## Configuración de la Base de Datos
 

@@ -24,10 +24,16 @@ const AdminDashboard = () => {
       color: 'var(--primary)'
     },
     {
+      title: 'Gestión de Materias',
+      description: 'Administrar materias y asignarlas a carreras',
+      path: '/admin/materias',
+      color: 'var(--success)'
+    },
+    {
       title: 'Períodos de Inscripción',
       description: 'Configurar fechas y habilitar inscripciones para materias',
       path: '/admin/inscripciones',
-      color: 'var(--success)'
+      color: 'var(--warning)'
     }
   ];
 
@@ -36,7 +42,7 @@ const AdminDashboard = () => {
       <div className="content">
         <div className="page-header">
           <div>
-            <h1>Panel de Administración</h1>
+            <h1>¡Bienvenido Administrador!</h1>
             <p className="page-subtitle">Seleccione la opción que desea gestionar</p>
           </div>
           <button className="btn-secondary" onClick={handleLogout}>

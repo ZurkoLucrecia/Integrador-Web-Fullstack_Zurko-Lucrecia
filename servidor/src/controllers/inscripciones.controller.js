@@ -2,7 +2,7 @@
 const inscribirEstudiante = async (req, res) => {
     try {
         const { id_materia } = req.body; // ID de la materia
-        const id_estudiante = req.usuario.id_usuario || req.usuario.id; // CORRECCIÓN: Usar id o id_usuario, lo que esté disponible
+        const id_estudiante = req.usuario.id_usuario; // CORREGIDO
 
         if (!id_materia) {
             return res.status(400).json({ 
@@ -95,12 +95,12 @@ const inscribirEstudiante = async (req, res) => {
 // Obtener materias disponibles para inscripción (para estudiantes)
 const obtenerMateriasDisponibles = async (req, res) => {
     try {
-        const id_estudiante = req.usuario.id_usuario || req.usuario.id;
+        const id_estudiante = req.usuario.id_usuario; // CORREGIDO
         const db = req.app.get('db');
 
         console.log(`=== OBTENER MATERIAS DISPONIBLES ===`);
         console.log(`ID Estudiante: ${id_estudiante}`);
-        console.log(`Usuario completo:`, req.usuario);
+        console.log(`Usuario completo:`, req.usuario); // CORREGIDO
 
         // Obtener carrera del estudiante
         const [estudiantes] = await db.query(
@@ -164,7 +164,7 @@ const obtenerMateriasDisponibles = async (req, res) => {
 // Obtener materias en las que el estudiante está inscrito
 const obtenerMateriasInscritas = async (req, res) => {
     try {
-        const id_estudiante = req.usuario.id_usuario || req.usuario.id;
+        const id_estudiante = req.usuario.id_usuario; // CORREGIDO
         const db = req.app.get('db');
 
         const [materias] = await db.query(`
@@ -195,7 +195,7 @@ const obtenerMateriasInscritas = async (req, res) => {
 // NUEVO: Obtener calificaciones (TODAS las inscripciones, incluyendo aprobadas y desaprobadas)
 const obtenerCalificaciones = async (req, res) => {
     try {
-        const id_estudiante = req.usuario.id_usuario || req.usuario.id;
+        const id_estudiante = req.usuario.id_usuario; // CORREGIDO
         const db = req.app.get('db');
 
         console.log('📊 Obteniendo calificaciones para estudiante:', id_estudiante);
@@ -232,7 +232,7 @@ const obtenerCalificaciones = async (req, res) => {
 const cancelarInscripcion = async (req, res) => {
     try {
         const { id_materia } = req.params;
-        const id_estudiante = req.usuario.id_usuario || req.usuario.id;
+        const id_estudiante = req.usuario.id_usuario; // CORREGIDO
         const db = req.app.get('db');
 
         // Verificar que la inscripción existe y está en estado 'cursando'

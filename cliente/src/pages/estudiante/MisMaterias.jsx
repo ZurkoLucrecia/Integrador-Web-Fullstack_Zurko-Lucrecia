@@ -48,7 +48,7 @@ const MisMaterias = () => {
       <div className="content">
         <div className="page-header">
           <div>
-            <h1>Mis Materias</h1>
+            <h1>¡Bienvenido Estudiante!</h1>
             <p className="page-subtitle">Accede a las diferentes secciones</p>
           </div>
           <button className="btn-secondary" onClick={handleLogout}>

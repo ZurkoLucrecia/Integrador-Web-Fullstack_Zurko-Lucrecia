@@ -29,17 +29,17 @@ function Inscripcion() {
 
   const handleInscribir = async (materiaId) => {
     try {
-      console.log('=== HANDLE INSCRIBIR ===');
-      console.log('Materia ID recibido:', materiaId);
+      console.log('=== MANEJAR INSCRIPCIÓN ===');
+      console.log('ID Materia recibido:', materiaId);
       console.log('Tipo de dato:', typeof materiaId);
       
-      // Log before calling API
+      // Registrar antes de llamar a la API
       console.log('Llamando a api.inscribirEnMateria con:', materiaId);
       await api.inscribirEnMateria(materiaId);
       
       toast.success('¡Inscripción realizada con éxito!'); // Mejor mensaje de éxito
       
-      // Refresh the list of available subjects
+      // Actualizar la lista de materias disponibles
       const response = await api.getMateriasDisponibles();
       setMaterias(response || []);
     } catch (err) {

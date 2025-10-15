@@ -29,6 +29,7 @@ import PerfilProfesor from './pages/profesor/PerfilProfesor';
 import AdminDashboard from './pages/admin/AdminDashboard';
 import Usuarios from './pages/admin/Usuarios';
 import GestionInscripciones from './pages/admin/GestionInscripciones';
+import GestionMaterias from './pages/admin/GestionMaterias';
 
 // Componentes
 import Menu from './components/layout/Menu';
@@ -121,6 +122,12 @@ function App() {
           <Route path="/admin/usuarios" element={
             <ProtectedRoute rolesPermitidos={['administrador']}>
               <Usuarios />
+            </ProtectedRoute>
+          } />
+          
+          <Route path="/admin/materias" element={
+            <ProtectedRoute rolesPermitidos={['administrador']}>
+              <GestionMaterias />
             </ProtectedRoute>
           } />
           

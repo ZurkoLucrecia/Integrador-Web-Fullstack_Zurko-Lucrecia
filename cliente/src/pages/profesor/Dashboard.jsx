@@ -42,7 +42,7 @@ const Dashboard = () => {
       <div className="content">
         <div className="page-header">
           <div>
-            <h1>Panel de Control - Profesor</h1>
+            <h1>¡Bienvenido Profesor/a!</h1>
             <p className="page-subtitle">Accede a las diferentes secciones</p>
           </div>
           <button className="btn-secondary" onClick={handleLogout}>

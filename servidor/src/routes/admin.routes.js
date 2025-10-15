@@ -12,7 +12,7 @@ router.put('/usuarios/:id', verificarToken, verificarRol('administrador'), usuar
 router.delete('/usuarios/:id', verificarToken, verificarRol('administrador'), usuariosController.deleteUsuario);
 
 // Rutas para administradores - Gestión de profesores y materias
-router.get('/profesores/:id/materias', verificarToken, verificarRol('administrador'), profesoresController.getProfesorMaterias);
+router.get('/profesores/:id/materias', verificarToken, profesoresController.getProfesorMaterias);
 router.post('/profesores/:id/materias', verificarToken, verificarRol('administrador'), profesoresController.assignProfesorMateria);
 router.delete('/profesores/:id/materias/:materiaId', verificarToken, verificarRol('administrador'), profesoresController.removeProfesorMateria);
 
@@ -29,5 +29,11 @@ router.post('/materias/:id_materia/limpiar-inscripciones', verificarToken, verif
 
 // Obtener inscripciones archivadas
 router.get('/materias/:id_materia/inscripciones-archivadas', verificarToken, verificarRol('administrador'), adminController.obtenerInscripcionesArchivadas);
+
+// Obtener estudiantes de una materia (permitido para profesores y administradores)
+router.get('/materias/:id_materia/estudiantes', verificarToken, adminController.obtenerEstudiantesPorMateria);
+
+// Actualizar calificación de un estudiante
+router.put('/materias/:id_materia/estudiantes/:id_estudiante/calificacion', verificarToken, adminController.actualizarCalificacion);
 
 module.exports = router;

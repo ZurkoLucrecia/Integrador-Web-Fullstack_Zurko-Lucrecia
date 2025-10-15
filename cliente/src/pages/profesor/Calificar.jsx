@@ -18,15 +18,22 @@ const Calificar = () => {
         const profile = await api.getProfile();
         const profesorId = profile.usuario.id_usuario;
         
-        // Fetch materias for this professor
-        const data = await api.getMaterias({ id_profesor: profesorId });
-        setMaterias(data);
+        console.log('=== CARGAR MATERIAS PARA CALIFICAR ===');
+        console.log('Profesor ID:', profesorId);
+        
+        // CAMBIO: Usar getProfesorMaterias en lugar de getMaterias
+        const response = await api.getProfesorMaterias(profesorId);
+        const materiasData = response.materias || response;
+        
+        console.log('Materias cargadas:', materiasData);
+        setMaterias(Array.isArray(materiasData) ? materiasData : []);
         
         // If there's only one materia, select it by default
-        if (data.length === 1) {
-          setSelectedMateria(data[0].id_materia);
+        if (Array.isArray(materiasData) && materiasData.length === 1) {
+          setSelectedMateria(materiasData[0].id_materia);
         }
       } catch (err) {
+        console.error('Error al cargar materias:', err);
         toast.error(err.message || 'Error al cargar las materias');
       } finally {
         setLoading(false);
@@ -48,16 +55,26 @@ const Calificar = () => {
     setLoading(true);
     
     try {
-      // This would need a backend endpoint to get students by materia
-      // For now, we'll use mock data
-      const mockEstudiantes = [
-        { id_usuario: 1, nombre: 'Juan', apellido: 'Pérez', email: 'juan.perez@estudiante.com', estado: 'cursando', nota_final: null },
-        { id_usuario: 2, nombre: 'Laura', apellido: 'Fernández', email: 'laura.fernandez@estudiante.com', estado: 'cursando', nota_final: 7.5 },
-        { id_usuario: 3, nombre: 'Pedro', apellido: 'Sánchez', email: 'pedro.sanchez@estudiante.com', estado: 'cursando', nota_final: null }
-      ];
+      console.log('=== CARGAR ESTUDIANTES PARA CALIFICAR ===');
+      console.log('Materia ID:', materiaId);
+      
+      // CAMBIO: Usar endpoint real en lugar de mock data
+      const response = await api.getEstudiantesPorMateria(materiaId);
+      
+      console.log('Respuesta API:', response);
+      
+      // Asegurar que obtenemos un array
+      let estudiantesData = [];
+      if (Array.isArray(response)) {
+        estudiantesData = response;
+      } else if (response && Array.isArray(response.estudiantes)) {
+        estudiantesData = response.estudiantes;
+      }
+      
+      console.log('Estudiantes obtenidos:', estudiantesData);
       
       // Add editable fields to each student
-      const estudiantesWithEdit = mockEstudiantes.map(est => ({
+      const estudiantesWithEdit = estudiantesData.map(est => ({
         ...est,
         editEstado: est.estado,
         editNota: est.nota_final
@@ -65,7 +82,9 @@ const Calificar = () => {
       
       setEstudiantes(estudiantesWithEdit);
     } catch (err) {
+      console.error('Error al cargar los estudiantes:', err);
       toast.error('Error al cargar los estudiantes');
+      setEstudiantes([]);
     } finally {
       setLoading(false);
     }
@@ -96,8 +115,16 @@ const Calificar = () => {
     }
     
     try {
-      // This would call the backend API to save the changes
-      // For now, we'll just simulate success
+      // Guardar en la BD
+      await api.actualizarCalificacion(
+        selectedMateria, 
+        estudiante.id_estudiante,
+        {
+          estado: estudiante.editEstado,
+          nota_final: estudiante.editNota
+        }
+      );
+      
       toast.success(`Cambios guardados para ${estudiante.nombre} ${estudiante.apellido}`);
       
       // Update the original values
@@ -106,7 +133,8 @@ const Calificar = () => {
       updatedEstudiantes[index].nota_final = updatedEstudiantes[index].editNota;
       setEstudiantes(updatedEstudiantes);
     } catch (err) {
-      toast.error('Error al guardar los cambios');
+      console.error('Error al guardar:', err);
+      toast.error(err.message || 'Error al guardar los cambios');
     }
   };
 
@@ -158,44 +186,52 @@ const Calificar = () => {
               </tr>
             </thead>
             <tbody>
-              {estudiantes.map((estudiante, index) => (
-                <tr key={estudiante.id_usuario}>
-                  <td>{estudiante.nombre} {estudiante.apellido}</td>
-                  <td>{estudiante.email}</td>
-                  <td>
-                    <select 
-                      value={estudiante.editEstado}
-                      onChange={(e) => handleEstadoChange(index, e.target.value)}
-                      className="estado-select"
-                    >
-                      <option value="cursando">Cursando</option>
-                      <option value="aprobado">Aprobado</option>
-                      <option value="desaprobado">Desaprobado</option>
-                      <option value="activo">Activo</option>
-                    </select>
-                  </td>
-                  <td>
-                    <input
-                      type="number"
-                      step="0.1"
-                      min="0"
-                      max="10"
-                      value={estudiante.editNota || ''}
-                      onChange={(e) => handleNotaChange(index, e.target.value)}
-                      className="nota-input"
-                      placeholder="0-10"
-                    />
-                  </td>
-                  <td>
-                    <button 
-                      className="btn-primary"
-                      onClick={() => handleGuardar(index)}
-                    >
-                      Guardar
-                    </button>
+              {estudiantes.length === 0 ? (
+                <tr>
+                  <td colSpan="5" style={{ textAlign: 'center', padding: '20px', color: '#666' }}>
+                    No hay estudiantes inscritos en esta materia
                   </td>
                 </tr>
-              ))}
+              ) : (
+                estudiantes.map((estudiante, index) => (
+                  <tr key={estudiante.id_estudiante}>
+                    <td>{estudiante.nombre} {estudiante.apellido}</td>
+                    <td>{estudiante.email}</td>
+                    <td>
+                      <select 
+                        value={estudiante.editEstado}
+                        onChange={(e) => handleEstadoChange(index, e.target.value)}
+                        className="estado-select"
+                      >
+                        <option value="cursando">Cursando</option>
+                        <option value="aprobado">Aprobado</option>
+                        <option value="desaprobado">Desaprobado</option>
+                        <option value="activo">Activo</option>
+                      </select>
+                    </td>
+                    <td>
+                      <input
+                        type="number"
+                        step="0.1"
+                        min="0"
+                        max="10"
+                        value={estudiante.editNota || ''}
+                        onChange={(e) => handleNotaChange(index, e.target.value)}
+                        className="nota-input"
+                        placeholder="0-10"
+                      />
+                    </td>
+                    <td>
+                      <button 
+                        className="btn-primary"
+                        onClick={() => handleGuardar(index)}
+                      >
+                        Guardar
+                      </button>
+                    </td>
+                  </tr>
+                ))
+              )}
             </tbody>
           </table>
         </div>
